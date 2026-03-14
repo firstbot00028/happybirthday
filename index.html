@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBD My Love | Habbal Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --love-red: #ff4b2b; --soft-pink: #ffebee; }
+        body { margin: 0; background: var(--soft-pink); font-family: 'Poppins', sans-serif; overflow: hidden; text-align: center; }
+        
+        .page { display: none; min-height: 100vh; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; animation: fadeIn 0.8s ease-in; position: relative; }
+        #page1 { display: flex; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        .treasure { font-size: 100px; cursor: pointer; animation: bounce 2s infinite; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); }
+        
+        .poem-box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 2px dashed var(--love-red); margin-bottom: 20px; }
+        .poem-text { font-family: 'Dancing Script', cursive; font-size: 24px; color: #444; line-height: 1.5; }
+        
+        /* Photo Slider */
+        .slider { width: 280px; height: 320px; position: relative; border-radius: 15px; border: 8px solid white; box-shadow: 0 15px 30px rgba(0,0,0,0.2); overflow: hidden; margin-bottom: 20px; }
+        .slider img { width: 100%; height: 100%; object-fit: cover; position: absolute; left: 0; top: 0; transition: opacity 1s ease-in-out; opacity: 0; }
+        .slider img.active { opacity: 1; }
+
+        .btn { background: var(--love-red); color: white; border: none; padding: 15px 35px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 18px; box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4); transition: 0.3s; z-index: 10; }
+        .btn:active { transform: scale(0.9); }
+
+        #noBtn { position: absolute; background: #999; transition: 0.1s; }
+
+        /* Final Big Greeting */
+        .final-card { background: white; padding: 40px 25px; border-radius: 30px; border: 10px double var(--love-red); box-shadow: 0 20px 50px rgba(0,0,0,0.2); max-width: 450px; width: 90%; }
+        .heart { font-size: 60px; color: var(--love-red); animation: pulse 1s infinite; margin-bottom: 15px; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <audio id="hbdMusic" loop>
+        <source src="hbd.mp3" type="audio/mp3">
+    </audio>
+
+    <div id="page1" class="page">
+        <h1 style="color:white; font-family:'Dancing Script'; font-size: 38px; text-shadow: 2px 2px 5px rgba(0,0,0,0.1);">Today is very special...</h1>
+        <div class="treasure" onclick="openSurprise()">🎁</div>
+        <p style="color:white; font-weight: bold; letter-spacing: 1px;">CLICK TO OPEN</p>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="poem-box">
+            <div class="poem-text">
+                "Another year of joy has passed,<br>
+                Memories made to always last.<br>
+                With a heart so kind and soul so sweet,<br>
+                You make my life truly complete!"
+            </div>
+        </div>
+        
+        <div class="slider">
+            <img src="hbd1.jpg" class="active" alt="Memory 1">
+            <img src="hbd2.jpg" alt="Memory 2">
+        </div>
+
+        <button class="btn" onclick="goToProposal()">From My Heart...</button>
+    </div>
+
+    <div id="page3" class="page">
+        <h1 style="font-family:'Dancing Script'; color: var(--love-red); font-size: 45px; margin-bottom: 10px;">Habbal Says...</h1>
+        <p style="font-size: 26px; font-weight: bold; margin: 0;">"I Love You! ❤️"</p>
+        <p style="color: #666;">Will you be my forever?</p>
+        
+        <div style="height: 150px; width: 100%; position: relative; margin-top: 30px;">
+            <button class="btn" onclick="goToFinal()">Yes! 😍</button>
+            <button class="btn" id="noBtn" onmouseover="escapeNo()">No 😢</button>
+        </div>
+    </div>
+
+    <div id="page4" class="page">
+        <div class="final-card">
+            <div class="heart">❤️</div>
+            <h1 style="font-family:'Dancing Script'; color: var(--love-red); font-size: 35px; margin: 0;">Happy Birthday!</h1>
+            <p style="line-height: 1.8; color: #333; font-size: 15px; margin-top: 20px;">
+                "You are the most precious gift in my life. Every moment with you is a blessing. Habbal promises to stay by your side, loving you more with every passing heartbeat."
+            </p>
+            <h3 style="font-family:'Dancing Script'; color: #777;">Forever Yours, Habbal</h3>
+            <button class="btn" style="margin-top: 20px; font-size: 14px;" onclick="location.reload()">See Again</button>
+        </div>
+    </div>
+
+    <script>
+        function openSurprise() {
+            const music = document.getElementById('hbdMusic');
+            music.play().catch(e => console.log("Audio needs user interaction"));
+            show('page2');
+            startMemories();
+        }
+
+        function startMemories() {
+            const imgs = document.querySelectorAll('.slider img');
+            let idx = 0;
+            setInterval(() => {
+                imgs[idx].classList.remove('active');
+                idx = (idx + 1) % imgs.length;
+                imgs[idx].classList.add('active');
+            }, 3000);
+        }
+
+        function goToProposal() { show('page3'); }
+        function goToFinal() { show('page4'); }
+
+        function show(id) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function escapeNo() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 50);
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+    </script>
+</body>
+</html>

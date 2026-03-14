@@ -17,20 +17,33 @@
 
         .treasure { font-size: 100px; cursor: pointer; animation: bounce 2s infinite; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); }
         
-        .poem-box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 2px dashed var(--love-red); margin-bottom: 20px; }
-        .poem-text { font-family: 'Dancing Script', cursive; font-size: 24px; color: #444; line-height: 1.5; }
-        
-        /* Photo Slider */
-        .slider { width: 280px; height: 320px; position: relative; border-radius: 15px; border: 8px solid white; box-shadow: 0 15px 30px rgba(0,0,0,0.2); overflow: hidden; margin-bottom: 20px; }
-        .slider img { width: 100%; height: 100%; object-fit: cover; position: absolute; left: 0; top: 0; transition: opacity 1s ease-in-out; opacity: 0; }
-        .slider img.active { opacity: 1; }
+        /* 🔥 Photo Slider with Overlay 🔥 */
+        .slider-container { width: 300px; height: 380px; position: relative; border-radius: 20px; border: 8px solid white; box-shadow: 0 15px 35px rgba(0,0,0,0.2); overflow: hidden; margin-bottom: 25px; background: #eee; }
+        .slider-container img { width: 100%; height: 100%; object-fit: cover; position: absolute; left: 0; top: 0; transition: opacity 1s ease-in-out; opacity: 0; }
+        .slider-container img.active { opacity: 1; }
 
-        .btn { background: var(--love-red); color: white; border: none; padding: 15px 35px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 18px; box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4); transition: 0.3s; z-index: 10; }
+        /* Image-ന് മുകളിൽ വരുന്ന ഡയലോഗ് ബോക്സ് */
+        .text-overlay { 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background: linear-gradient(transparent, rgba(0,0,0,0.8)); 
+            color: white; 
+            padding: 30px 15px; 
+            box-sizing: border-box; 
+            z-index: 5; 
+            font-family: 'Dancing Script', cursive; 
+            font-size: 24px; 
+            line-height: 1.4; 
+            transition: opacity 0.5s ease; 
+        }
+
+        .btn { background: var(--love-red); color: white; border: none; padding: 15px 35px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 18px; box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4); z-index: 10; transition: 0.3s; }
         .btn:active { transform: scale(0.9); }
 
-        #noBtn { position: absolute; background: #999; transition: 0.1s; }
+        #noBtn { position: absolute; background: #999; transition: 0.1s; z-index: 100; }
 
-        /* Final Big Greeting */
         .final-card { background: white; padding: 40px 25px; border-radius: 30px; border: 10px double var(--love-red); box-shadow: 0 20px 50px rgba(0,0,0,0.2); max-width: 450px; width: 90%; }
         .heart { font-size: 60px; color: var(--love-red); animation: pulse 1s infinite; margin-bottom: 15px; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
@@ -43,24 +56,19 @@
     </audio>
 
     <div id="page1" class="page">
-        <h1 style="color:white; font-family:'Dancing Script'; font-size: 38px; text-shadow: 2px 2px 5px rgba(0,0,0,0.1);">Today is very special...</h1>
+        <h1 style="color:white; font-family:'Dancing Script'; font-size: 38px; text-shadow: 2px 2px 5px rgba(0,0,0,0.1);">A surprise for you...</h1>
         <div class="treasure" onclick="openSurprise()">🎁</div>
         <p style="color:white; font-weight: bold; letter-spacing: 1px;">CLICK TO OPEN</p>
     </div>
 
     <div id="page2" class="page">
-        <div class="poem-box">
-            <div class="poem-text">
-                "Another year of joy has passed,<br>
-                Memories made to always last.<br>
-                With a heart so kind and soul so sweet,<br>
-                You make my life truly complete!"
+        <div class="slider-container">
+            <img src="hbd1.jpg" class="active" id="img1">
+            <img src="hbd2.jpg" id="img2">
+            
+            <div id="dynamicPoem" class="text-overlay">
+                "Another year of joy has passed,<br>Memories made to always last."
             </div>
-        </div>
-        
-        <div class="slider">
-            <img src="hbd1.jpg" class="active" alt="Memory 1">
-            <img src="hbd2.jpg" alt="Memory 2">
         </div>
 
         <button class="btn" onclick="goToProposal()">From My Heart...</button>
@@ -90,21 +98,37 @@
     </div>
 
     <script>
+        // കവിതയിലെ വരികൾ - ഫോട്ടോയ്ക്ക് അനുസരിച്ച്
+        const poems = [
+            "\"Another year of joy has passed,<br>Memories made to always last.\"",
+            "\"With a heart so kind and soul so sweet,<br>You make my life truly complete!\""
+        ];
+
         function openSurprise() {
             const music = document.getElementById('hbdMusic');
-            music.play().catch(e => console.log("Audio needs user interaction"));
+            music.play().catch(e => console.log("Audio play blocked by browser"));
             show('page2');
-            startMemories();
+            startDynamicSlider();
         }
 
-        function startMemories() {
-            const imgs = document.querySelectorAll('.slider img');
+        function startDynamicSlider() {
+            const imgs = document.querySelectorAll('.slider-container img');
+            const poemDisplay = document.getElementById('dynamicPoem');
             let idx = 0;
+
             setInterval(() => {
+                // ഫോട്ടോ മാറ്റുന്നു
                 imgs[idx].classList.remove('active');
                 idx = (idx + 1) % imgs.length;
                 imgs[idx].classList.add('active');
-            }, 3000);
+
+                // വരികൾ മാറ്റുന്നു (Fade effect)
+                poemDisplay.style.opacity = 0;
+                setTimeout(() => {
+                    poemDisplay.innerHTML = poems[idx];
+                    poemDisplay.style.opacity = 1;
+                }, 500);
+            }, 4000); // ഓരോ 4 സെക്കൻഡിലും മാറും
         }
 
         function goToProposal() { show('page3'); }
@@ -117,8 +141,8 @@
 
         function escapeNo() {
             const btn = document.getElementById('noBtn');
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 50);
+            const x = Math.random() * (window.innerWidth - btn.clientWidth);
+            const y = Math.random() * (window.innerHeight - btn.clientHeight);
             btn.style.left = x + 'px';
             btn.style.top = y + 'px';
         }
